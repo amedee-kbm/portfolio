@@ -79,7 +79,7 @@ export const DATA = {
       school: "University of Lodz",
       href: "https://www.uni.lodz.pl",
       degree: "MSc Informatics (Computer Science)",
-      logoUrl: "",
+      logoUrl: "/uni-lodz.jpg",
       start: "2024",
       end: "2026",
     },
@@ -87,7 +87,7 @@ export const DATA = {
       school: "Vincent Pol University",
       href: "https://www.akademia-pol.edu.pl",
       degree: "BA Economics – International Business Management",
-      logoUrl: "",
+      logoUrl: "/vincent-pol.jpg",
       start: "2020",
       end: "2023",
     },
@@ -104,19 +104,20 @@ export const DATA = {
     {
       title: "Btq.",
       href: "https://btq-frontend-nextjs.vercel.app/",
-      dates: "",
+      dates: "2026 - Present",
       active: true,
       description:
-        "A mobile-first, multi-tenant storefront platform for small clothing sellers. It has a REST API backend with multi-tenant data isolation, secure authentication, order processing, customer–seller chat, web-push notifications and cloud image storage. Architecture decisions are recorded as ADRs, and CI checks tests, type checking, security scanning and dependency validation.",
+        "A mobile-first online storefront for a Kigali clothing boutique, in active development. The Django API handles email-based accounts with JWT authentication. Its catalogue model covers nested categories, tags, collections, favourites and size/colour variants, with database constraints enforcing rules such as sale price below list price. The Next.js frontend talks to the API through server-side route handlers that keep tokens in httpOnly cookies. Product images go to Cloudflare R2, and the API is set up to deploy on Render with Neon Postgres.",
       technologies: [
         "Django 6",
         "django-ninja-extra",
-        "Celery",
-        "Redis",
+        "JWT",
         "PostgreSQL",
         "Cloudflare R2",
         "Next.js",
         "TypeScript",
+        "Tailwind CSS",
+        "shadcn/ui",
         "Vercel",
         "Render",
       ],
@@ -137,7 +138,7 @@ export const DATA = {
           icon: <Icons.github className="size-3" />,
         },
       ],
-      image: "",
+      image: "/projects/btq.webp",
       video: "",
     },
     {
@@ -146,7 +147,7 @@ export const DATA = {
       dates: "",
       active: true,
       description:
-        "A distributed job scheduler with crash recovery and a pipeline framework. It runs on PostgreSQL alone, without a message broker. It has leader election, failover, failure detection, checkpoint/recovery and reliable retries. Its reliability was tested with deterministic fault injection, live process-kill tests and load experiments. Built for my master's thesis and released under the MIT licence.",
+        "A distributed job scheduler with crash recovery and a pipeline framework that runs on PostgreSQL alone, with no message broker. Workers claim jobs with `SELECT … FOR UPDATE SKIP LOCKED`. A lease row elects one active scheduler, and a standby takes over when the lease expires. Jobs resume from their last checkpoint after a crash, and failed jobs retry with backoff before moving to a dead-letter state. Every state change is a conditional write, so a worker wrongly marked as dead can't corrupt results. Tested with 20 deterministic fault-injection tests, live leader- and worker-kill tests, and throughput sweeps. Built for my master's thesis and released under the MIT licence.",
       technologies: ["Python", "Django Ninja", "PostgreSQL", "Docker Compose"],
       links: [
         {
@@ -155,7 +156,30 @@ export const DATA = {
           icon: <Icons.github className="size-3" />,
         },
       ],
-      image: "",
+      image: "/projects/endure.webp",
+      video: "",
+    },
+    {
+      title: "Ruminant",
+      href: "https://ruminant.onrender.com",
+      dates: "",
+      active: true,
+      description:
+        "A reading companion that turns each book into a series of questions and notes. You add a book by typing its chapters or importing an EPUB. Before reading, you write what you want from the book, then add notes chapter by chapter and finish with what you'll keep. Writing autosaves with retry, sign-in uses magic links, and everything exports as Markdown.",
+      technologies: ["React", "Vite", "Chakra UI", "Supabase", "PostgreSQL", "epub.js"],
+      links: [
+        {
+          type: "Website",
+          href: "https://ruminant.onrender.com",
+          icon: <Icons.globe className="size-3" />,
+        },
+        {
+          type: "Source",
+          href: "https://github.com/amedee-kbm/Ruminant",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "/projects/ruminant.webp",
       video: "",
     },
     {
@@ -164,7 +188,7 @@ export const DATA = {
       dates: "",
       active: true,
       description:
-        "A terminal note-taking tool that stores notes as plain Markdown files with YAML front matter. Its full-screen Textual interface has a live Markdown preview, fuzzy search and inline add/edit/delete. It installs as a CLI tool with uv, and the storage location is set with an environment variable.",
+        "A terminal note-taking tool that stores notes as plain Markdown files with YAML front matter. Its full-screen Textual interface has a live Markdown preview, search-as-you-type filtering and inline add/edit/delete, plus scriptable `cards` subcommands. It installs as a CLI tool with uv, and the storage location is set with an environment variable.",
       technologies: ["Python", "Textual", "uv"],
       links: [
         {
@@ -173,7 +197,7 @@ export const DATA = {
           icon: <Icons.github className="size-3" />,
         },
       ],
-      image: "",
+      image: "/projects/notest.webp",
       video: "",
     },
   ],
