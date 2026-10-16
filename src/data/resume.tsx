@@ -179,7 +179,7 @@ export const DATA = {
           icon: <Icons.github className="size-3" />,
         },
       ],
-      image: "/projects/ruminant.webp",
+      image: "/projects/ruminant.gif",
       video: "",
     },
     {
@@ -197,7 +197,7 @@ export const DATA = {
           icon: <Icons.github className="size-3" />,
         },
       ],
-      image: "/projects/notest.webp",
+      image: "/projects/notest.gif",
       video: "",
     },
   ],
