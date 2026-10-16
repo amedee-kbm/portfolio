@@ -2,7 +2,6 @@ import Link from "next/link";
 import { FlickeringGrid } from "@/components/magicui/flickering-grid";
 import { DATA } from "@/data/resume";
 import { CopyEmail } from "@/components/copy-email";
-import { LastVisit } from "@/components/last-visit";
 
 export default function ContactSection() {
   return (
@@ -36,7 +35,6 @@ export default function ContactSection() {
           and I&apos;ll get back to you as soon as I can.
         </p>
         <CopyEmail email={DATA.contact.email} />
-        <LastVisit />
       </div>
     </div>
   );

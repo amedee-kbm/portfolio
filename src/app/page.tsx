@@ -10,6 +10,7 @@ import HackathonsSection from "@/components/section/hackathons-section";
 import ProjectsSection from "@/components/section/projects-section";
 import WorkSection from "@/components/section/work-section";
 import { ArrowUpRight } from "lucide-react";
+import { LastVisit } from "@/components/last-visit";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -31,6 +32,9 @@ export default function Page() {
                 delay={BLUR_FADE_DELAY}
                 text={DATA.description}
               />
+              <BlurFade delay={BLUR_FADE_DELAY * 2}>
+                <LastVisit />
+              </BlurFade>
             </div>
             <BlurFade delay={BLUR_FADE_DELAY} className="order-1 md:order-2">
               <Avatar className="size-24 md:size-32 border rounded-full shadow-lg ring-4 ring-muted">

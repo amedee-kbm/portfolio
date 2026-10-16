@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MapPinIcon } from "lucide-react";
+import {
+  animate,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+} from "motion/react";
 
 type Visit = { city: string | null; country: string };
 type Stats = { last: Visit | null; visits: number | null };
@@ -30,8 +36,35 @@ function alreadyCounted() {
   return false;
 }
 
+function CountUp({ value }: { value: number }) {
+  const reduceMotion = useReducedMotion();
+  const count = useMotionValue(reduceMotion ? value : 0);
+  const text = useTransform(count, (n) => Math.round(n).toLocaleString("en"));
+
+  useEffect(() => {
+    if (reduceMotion) {
+      count.set(value);
+      return;
+    }
+    const controls = animate(count, value, {
+      duration: 1.4,
+      delay: 0.3,
+      ease: [0.16, 1, 0.3, 1],
+    });
+    return () => controls.stop();
+  }, [count, value, reduceMotion]);
+
+  return <motion.span className="tabular-nums">{text}</motion.span>;
+}
+
+const item = {
+  hidden: { opacity: 0, y: 6, filter: "blur(4px)" },
+  show: { opacity: 1, y: 0, filter: "blur(0px)" },
+};
+
 export function LastVisit() {
   const [stats, setStats] = useState<Stats | null>(null);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const method = alreadyCounted() ? "GET" : "POST";
@@ -44,16 +77,48 @@ export function LastVisit() {
   if (!stats?.last && !stats?.visits) return null;
 
   return (
-    <p className="inline-flex flex-wrap items-center justify-center gap-x-1.5 text-xs text-muted-foreground">
-      <MapPinIcon className="size-3.5" aria-hidden />
-      {stats.last && <span>Last visit from {formatVisit(stats.last)}</span>}
-      {stats.last && stats.visits ? <span aria-hidden>·</span> : null}
-      {stats.visits ? (
-        <span className="tabular-nums">
-          {stats.visits.toLocaleString("en")}{" "}
-          {stats.visits === 1 ? "visit" : "visits"}
-        </span>
+    <motion.div
+      className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground"
+      initial={reduceMotion ? false : "hidden"}
+      animate="show"
+      transition={{ staggerChildren: 0.12 }}
+    >
+      {stats.last && (
+        <motion.span
+          variants={item}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="inline-flex items-center gap-2"
+        >
+          <span className="relative flex size-1.5" aria-hidden>
+            <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-75 motion-reduce:hidden" />
+            <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
+          </span>
+          <span>
+            Last visit from{" "}
+            <span className="font-medium text-foreground">
+              {formatVisit(stats.last)}
+            </span>
+          </span>
+        </motion.span>
+      )}
+      {stats.last && stats.visits ? (
+        <motion.span
+          variants={{ hidden: { opacity: 0, scaleY: 0 }, show: { opacity: 1, scaleY: 1 } }}
+          className="h-3 w-px bg-border"
+          aria-hidden
+        />
       ) : null}
-    </p>
+      {stats.visits ? (
+        <motion.span
+          variants={item}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
+          <span className="font-medium text-foreground">
+            <CountUp value={stats.visits} />
+          </span>{" "}
+          {stats.visits === 1 ? "visit" : "visits"}
+        </motion.span>
+      ) : null}
+    </motion.div>
   );
 }
