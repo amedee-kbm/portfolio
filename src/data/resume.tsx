@@ -139,7 +139,7 @@ export const DATA = {
         },
       ],
       image: "/projects/btq.webp",
-      video: "",
+      video: "/projects/btq.mp4",
     },
     {
       title: "Endure",
