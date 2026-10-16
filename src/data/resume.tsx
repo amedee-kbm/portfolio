@@ -95,7 +95,7 @@ export const DATA = {
       school: "Petit Séminaire de Rwesero",
       href: "https://www.google.com/maps/search/Petit+Seminaire+de+Rwesero",
       degree: "Rwanda Advanced Level Certificate – Mathematics, Chemistry, Biology",
-      logoUrl: "",
+      logoUrl: "/rwesero.png",
       start: "2012",
       end: "2017",
     },
@@ -208,7 +208,7 @@ export const DATA = {
       location: "University of Lodz",
       description:
         "“Designing and Evaluating a Scalable and Fault-Tolerant Task Scheduler for Automated Report Generation”. This research is the basis of Endure, which I released as an MIT-licensed open-source scheduler.",
-      image: "",
+      image: "/uni-lodz.jpg",
       links: [
         {
           title: "Endure",
@@ -219,11 +219,11 @@ export const DATA = {
     },
     {
       title: "Rector Scholarship",
-      dates: "",
+      dates: "2025",
       location: "University of Lodz",
       description:
         "Awarded the Rector Scholarship for the university's best students.",
-      image: "",
+      image: "/uni-lodz.jpg",
       links: [],
     },
     {
@@ -232,9 +232,15 @@ export const DATA = {
       location: "Anseong, South Korea",
       description:
         "Represented Rwanda at the olympiad, held by the Korean Agency for Technology and Standards, and won the Bronze Prize.",
-      image: "",
+      image: "/rwesero.png",
       win: "Bronze Prize",
-      links: [],
+      links: [
+        {
+          title: "Rwanda Standards Board",
+          icon: <Icons.globe className="h-4 w-4" />,
+          href: "https://www.rsb.gov.rw/updates/news-detail/standards-contest-team-rwanda-won-bronze",
+        },
+      ],
     },
   ],
 } as const;
