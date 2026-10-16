@@ -1,44 +1,61 @@
 import type { NextRequest } from "next/server";
+import { Redis } from "@upstash/redis";
 
 export const dynamic = "force-dynamic";
 
-const KEY = "portfolio:last-visit";
+const LAST_VISIT_KEY = "portfolio:last-visit";
+const VISITS_KEY = "portfolio:visits";
 
-// Works with both the Vercel KV/Upstash integration env names and plain Upstash ones.
-const REDIS_URL =
-  process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL;
-const REDIS_TOKEN =
-  process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN;
+type Visit = { city: string | null; country: string };
 
-async function redis(command: string[]) {
-  const res = await fetch(REDIS_URL!, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${REDIS_TOKEN}` },
-    body: JSON.stringify(command),
-    cache: "no-store",
-  });
-  if (!res.ok) throw new Error(`Redis responded ${res.status}`);
-  return (await res.json()).result as string | null;
-}
+// fromEnv reads UPSTASH_REDIS_REST_* or the Vercel integration's KV_REST_API_*.
+const configured = Boolean(
+  (process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL) &&
+    (process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN),
+);
+const redis = configured ? Redis.fromEnv() : null;
 
-function locationFrom(req: NextRequest) {
+function locationFrom(req: NextRequest): Visit | null {
   const country = req.headers.get("x-vercel-ip-country");
   if (!country) return null;
   const city = req.headers.get("x-vercel-ip-city");
   return { city: city ? decodeURIComponent(city) : null, country };
 }
 
-// Records the current visitor's location and returns the previous visitor's.
-export async function POST(req: NextRequest) {
-  if (!REDIS_URL || !REDIS_TOKEN) return Response.json({ last: null });
+// Read-only: the last visitor's location and the total visit count.
+export async function GET() {
+  return readStats();
+}
+
+async function readStats() {
+  if (!redis) return Response.json({ last: null, visits: null });
 
   try {
-    const current = locationFrom(req);
-    const previous = current
-      ? await redis(["SET", KEY, JSON.stringify(current), "GET"])
-      : await redis(["GET", KEY]);
-    return Response.json({ last: previous ? JSON.parse(previous) : null });
+    const [last, visits] = await redis.mget<[Visit | null, number | null]>(
+      LAST_VISIT_KEY,
+      VISITS_KEY,
+    );
+    return Response.json({ last, visits });
   } catch {
-    return Response.json({ last: null });
+    return Response.json({ last: null, visits: null });
+  }
+}
+
+// Records a visit: bumps the counter, stores this visitor's location and
+// returns the previous visitor's. Requests without Vercel geo headers (local
+// dev, which shares the production database) are only read, never recorded.
+export async function POST(req: NextRequest) {
+  const current = locationFrom(req);
+  if (!redis || !current) return readStats();
+
+  try {
+    const [last, visits] = await redis
+      .pipeline()
+      .set(LAST_VISIT_KEY, current, { get: true })
+      .incr(VISITS_KEY)
+      .exec<[Visit | null, number]>();
+    return Response.json({ last, visits });
+  } catch {
+    return Response.json({ last: null, visits: null });
   }
 }
