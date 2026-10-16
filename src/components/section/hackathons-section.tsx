@@ -19,9 +19,7 @@ export default function HackathonsSection() {
           <div className="flex flex-col gap-y-3 items-center justify-center">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Research &amp; recognition</h2>
             <p className="text-muted-foreground md:text-lg/relaxed lg:text-base/relaxed xl:text-lg/relaxed text-balance text-center">
-              Academic research, scholarships and international competitions,
-              from representing Rwanda as a high-school student to my
-              master&apos;s thesis on fault-tolerant scheduling.
+              Notable academic achievements
             </p>
           </div>
         </div>
